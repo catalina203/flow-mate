@@ -110,3 +110,70 @@ body {
 .tooltip:hover .tooltip-text {
   @apply visible opacity-100;
 }
+
+/* 文档编辑器样式覆盖 */
+.docx-editor-container {
+  --editor-primary: #3b82f6;
+  --editor-bg: #ffffff;
+  --editor-text: #1e293b;
+  --editor-border: #e2e8f0;
+}
+
+/* 工具栏整体 */
+.docx-editor-container [class*="toolbar"],
+.docx-editor-container [class*="Toolbar"],
+.docx-editor-container [role="toolbar"] {
+  font-size: 11px !important;
+  line-height: 1.2 !important;
+  min-height: 32px !important;
+}
+
+/* 工具栏下拉框和选择框 */
+.docx-editor-container [class*="toolbar"] select,
+.docx-editor-container [class*="Toolbar"] select,
+.docx-editor-container select,
+.docx-editor-container [class*="dropdown"],
+.docx-editor-container [class*="select"] {
+  font-size: 11px !important;
+  padding: 2px 4px !important;
+  min-height: 20px !important;
+  height: 22px !important;
+  line-height: 1.2 !important;
+}
+
+/* 工具栏按钮 */
+.docx-editor-container [class*="toolbar"] button,
+.docx-editor-container [class*="Toolbar"] button,
+.docx-editor-container button[role="button"] {
+  font-size: 11px !important;
+  padding: 3px 6px !important;
+  min-height: 24px !important;
+  line-height: 1.2 !important;
+}
+
+/* 菜单和弹出框 */
+.docx-editor-container [class*="menu"],
+.docx-editor-container [class*="popover"],
+.docx-editor-container [class*="dropdown-menu"] {
+  font-size: 11px !important;
+}
+
+/* 列表项 */
+.docx-editor-container li,
+.docx-editor-container [role="option"],
+.docx-editor-container [role="listbox"] li {
+  font-size: 11px !important;
+  padding: 3px 8px !important;
+}
+
+/* 输入框 */
+.docx-editor-container input[type="text"],
+.docx-editor-container input[type="number"] {
+  font-size: 11px !important;
+  padding: 2px 4px !important;
+}
+
+/* 编辑器内部 */
+.docx-editor-container .ProseMirror {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@eigenpal/docx-js-editor": "^0.0.33",
     "jszip": "3.10.1",
     "mammoth": "^1.12.0",
     "next": "14.2.3",

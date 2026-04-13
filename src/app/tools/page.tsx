@@ -23,6 +23,7 @@ const tools: Tool[] = [
   { name: 'Word 转 PDF', description: '将 Word 文档转换为 PDF', icon: '📝', href: '/tools/word-to-pdf', category: '文档转换' },
   { name: 'PDF 合并', description: '将多个 PDF 文件合并为一个', icon: '📑', href: '/tools/pdf-merge', category: '文档转换' },
   { name: 'PDF 拆分', description: '将 PDF 拆分为多个文件', icon: '✂️', href: '/tools/pdf-split', category: '文档转换' },
+  { name: '文档编辑器', description: '在线编辑 Word 文档', icon: '📝', href: '/tools/document-editor', category: '文档转换' },
   
   // 数据处理
   { name: '数据去重', description: '删除重复行，保留指定列重复项', icon: '🧹', href: '/tools/data-processing', category: '数据处理' },
