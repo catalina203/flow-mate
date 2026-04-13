@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@eigenpal/docx-js-editor": "^0.0.33",
+    "@tailwindcss/typography": "^0.5.19",
+    "@theguild/remark-mermaid": "^0.3.0",
     "jszip": "3.10.1",
     "mammoth": "^1.12.0",
+    "mermaid": "^11.14.0",
     "next": "14.2.3",
     "pdf-lib": "1.17.1",
     "pdfjs-dist": "^3.11.174",
@@ -19,6 +22,8 @@
     "react-dnd": "16.0.1",
     "react-dnd-html5-backend": "16.0.1",
     "react-dom": "18.2.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "xlsx": "0.18.5"
   },
   "devDependencies": {
