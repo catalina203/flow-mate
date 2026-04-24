@@ -14,6 +14,15 @@ interface Tool {
 }
 
 const tools: Tool[] = [
+  // 图表设计
+  { name: 'Markdown 编辑器', description: '编辑 Markdown 笔记文档', icon: '📋', href: '/tools/markdown-editor', category: '图表设计' },
+  { name: '图表编辑器', description: '绘制流程图、序列图等图表', icon: '📊', href: '/tools/diagram-editor', category: '图表设计' },
+
+  // 办公文档
+  { name: 'Word 预览/编辑', description: '在线预览和编辑 Word 文档', icon: '📝', href: '/tools/word', category: '办公文档' },
+  { name: 'Excel 预览/编辑', description: '在线预览和编辑 Excel 表格', icon: '📗', href: '/tools/excel', category: '办公文档' },
+  { name: 'PPT 预览/编辑', description: '在线预览和编辑 PowerPoint 文档', icon: '🖼️', href: '/tools/ppt', category: '办公文档' },
+
   // 文档转换
   { name: 'PDF 转 Excel', description: '将 PDF 表格提取为 Excel 文件', icon: '📄', href: '/tools/pdf-to-excel', category: '文档转换' },
   { name: '图片转 PDF', description: '将图片合并转换为 PDF 文件', icon: '📑', href: '/tools/image-to-pdf', category: '文档转换' },
@@ -23,10 +32,7 @@ const tools: Tool[] = [
   { name: 'Word 转 PDF', description: '将 Word 文档转换为 PDF', icon: '📝', href: '/tools/word-to-pdf', category: '文档转换' },
   { name: 'PDF 合并', description: '将多个 PDF 文件合并为一个', icon: '📑', href: '/tools/pdf-merge', category: '文档转换' },
   { name: 'PDF 拆分', description: '将 PDF 拆分为多个文件', icon: '✂️', href: '/tools/pdf-split', category: '文档转换' },
-  { name: '文档编辑器', description: '在线编辑 Word 文档', icon: '📝', href: '/tools/document-editor', category: '文档转换' },
-  { name: 'Markdown 编辑器', description: '编辑 Markdown 笔记文档', icon: '📋', href: '/tools/markdown-editor', category: '文档转换' },
-  { name: '图表编辑器', description: '绘制流程图、序列图等图表', icon: '📊', href: '/tools/diagram-editor', category: '文档转换' },
-  
+
   // 数据处理
   { name: '数据去重', description: '删除重复行，保留指定列重复项', icon: '🧹', href: '/tools/data-processing', category: '数据处理' },
   { name: '数据排序', description: '按指定列升序或降序排列', icon: '↕️', href: '/tools/data-processing', category: '数据处理' },
@@ -61,12 +67,19 @@ const tools: Tool[] = [
   // 编码转换
   { name: '时间戳转换', description: 'Unix时间戳 ↔ 日期时间', icon: '⏰', href: '/tools/timestamp', category: '编码转换' },
   { name: 'JSON 格式化', description: '美化、压缩、验证 JSON', icon: '📋', href: '/tools/json-format', category: '编码转换' },
+  { name: 'URL 编码', description: 'URL 编码/解码 (%编码)', icon: '🔗', href: '/tools/url-encode', category: '编码转换' },
+  { name: 'Base64 编码', description: 'Base64 编码/解码', icon: '📝', href: '/tools/base64', category: '编码转换' },
+  { name: 'HTML 编码', description: 'HTML 实体编码/解码', icon: '🏷️', href: '/tools/html-encode', category: '编码转换' },
+  { name: 'Hash 加密', description: 'MD5/SHA 等哈希加密', icon: '🔐', href: '/tools/hash', category: '编码转换' },
+  { name: 'UUID 生成', description: '生成 UUID/GUID', icon: '🎲', href: '/tools/uuid', category: '编码转换' },
 ];
 
-const categories = ['文档转换', '数据处理', '文本处理', '图片工具', '文件压缩', '编码转换'];
+const categories = ['办公文档', '图表设计', '文档转换', '数据处理', '文本处理', '图片工具', '文件压缩', '编码转换'];
 
 const categoryIcons: Record<string, string> = {
-  '文档转换': '📄',
+  '办公文档': '📄',
+  '图表设计': '📊',
+  '文档转换': '📑',
   '数据处理': '📊',
   '文本处理': '📝',
   '图片工具': '🖼️',
@@ -135,12 +148,13 @@ function ToolsContent() {
                 <h2 className="text-xl font-bold text-gray-800">{category}</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {categoryTools.map((tool) => (
+                {categoryTools.map((tool, index) => (
                   <Link
-                    key={tool.href}
+                    key={`${tool.href}-${index}`}
                     href={tool.comingSoon ? '#' : tool.href}
+                    onClick={(e) => { if (tool.comingSoon) { e.preventDefault(); alert('表格编辑器功能正在优化中，敬请期待！'); }}}
                     className={`block bg-white rounded-xl shadow-sm hover:shadow-md transition-all p-5 ${
-                      tool.comingSoon ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-1'
+                      tool.comingSoon ? 'opacity-60 cursor-pointer' : 'hover:-translate-y-1'
                     }`}
                   >
                     <div className="flex items-start gap-3">

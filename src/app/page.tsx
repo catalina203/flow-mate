@@ -9,6 +9,15 @@ interface Tool {
 }
 
 const tools: Tool[] = [
+  // 图表设计
+  { name: 'Markdown 编辑器', description: '编辑 Markdown 笔记文档', icon: '📋', href: '/tools/markdown-editor', category: '图表设计' },
+  { name: '图表编辑器', description: '绘制流程图、序列图等图表', icon: '📊', href: '/tools/diagram-editor', category: '图表设计' },
+
+  // 办公文档
+  { name: 'Word 预览/编辑', description: '在线预览和编辑 Word 文档', icon: '📝', href: '/tools/word', category: '办公文档' },
+  { name: 'Excel 预览/编辑', description: '在线预览和编辑 Excel 表格', icon: '📗', href: '/tools/excel', category: '办公文档' },
+  { name: 'PPT 预览/编辑', description: '在线预览和编辑 PowerPoint 文档', icon: '🖼️', href: '/tools/ppt', category: '办公文档' },
+
   // 文档转换
   { name: 'PDF 转 Excel', description: '将 PDF 表格提取为 Excel 文件', icon: '📄', href: '/tools/pdf-to-excel', category: '文档转换' },
   { name: 'PDF 转图片', description: '将 PDF 每一页转换为图片', icon: '🖼️', href: '/tools/pdf-to-image', category: '文档转换' },
@@ -52,10 +61,12 @@ const tools: Tool[] = [
   { name: 'JSON 格式化', description: '美化、压缩、验证 JSON', icon: '📋', href: '/tools/json-format', category: '编码转换' },
 ];
 
-const categories = ['文档转换', '数据处理', '文本处理', '图片工具', '文件压缩', '编码转换'];
+const categories = ['办公文档', '图表设计', '文档转换', '数据处理', '文本处理', '图片工具', '文件压缩', '编码转换'];
 
 const categoryIcons: Record<string, string> = {
-  '文档转换': '📄',
+  '办公文档': '📄',
+  '图表设计': '📊',
+  '文档转换': '📑',
   '数据处理': '📊',
   '文本处理': '📝',
   '图片工具': '🖼️',
@@ -68,14 +79,14 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <nav className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xl">F</span>
             </div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Flow Mate
             </h1>
-          </div>
+          </Link>
           <div className="flex items-center space-x-6">
             <Link href="/" className="text-blue-600 font-medium border-b-2 border-blue-600">首页</Link>
             <Link href="/tools" className="text-gray-700 hover:text-blue-600 font-medium">所有工具</Link>
@@ -116,9 +127,9 @@ export default function Home() {
               <h3 className="text-2xl font-bold text-gray-800">{category}</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {tools.filter(t => t.category === category).map((tool) => (
+              {tools.filter(t => t.category === category).map((tool, index) => (
                 <Link
-                  key={tool.href}
+                  key={`${tool.href}-${index}`}
                   href={tool.href}
                   className="bg-white rounded-xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all p-5 group"
                 >

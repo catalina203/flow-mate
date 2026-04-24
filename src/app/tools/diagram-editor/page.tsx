@@ -1,14 +1,27 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import mermaid from 'mermaid';
 
+// 初始化 mermaid
 mermaid.initialize({
   startOnLoad: false,
   theme: 'default',
   securityLevel: 'loose',
 });
+
+// 全局错误处理 - 在组件加载前设置
+if (typeof window !== 'undefined') {
+  // 静默所有未捕获的 mermaid 错误
+  window.onerror = (message: any, source: any, lineno: any, colno: any, error: any) => {
+    const msg = String(message || '');
+    if (msg.includes && (msg.includes('mermaid') || msg.includes('Syntax error'))) {
+      return true; // 阻止默认错误处理
+    }
+    return false;
+  };
+}
 
 function MermaidPreview({ code, onError, onSvgReady }: { code: string; onError: (err: string) => void; onSvgReady: (svg: string) => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -20,33 +33,57 @@ function MermaidPreview({ code, onError, onSvgReady }: { code: string; onError: 
       setSvg('');
       setError('');
       onSvgReady('');
+      onError('');
       return;
     }
 
     const renderDiagram = async () => {
       try {
         const id = `mermaid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        const { svg } = await mermaid.render(id, code);
-        setSvg(svg);
-        setError('');
-        onError('');
-        onSvgReady(svg);
+        const result = await mermaid.render(id, code);
+        const svgContent = result.svg as string;
+        
+        if (svgContent) {
+          setSvg(svgContent);
+          setError('');
+          onError('');
+          onSvgReady(svgContent);
+        } else {
+          setError('渲染失败');
+          setSvg('');
+          onError('渲染失败');
+          onSvgReady('');
+        }
       } catch (err: any) {
-        setError(err.message || '渲染失败');
+        const errorMsg = err.message || '语法错误';
+        // 只在页面内显示错误提示
+        setError(errorMsg);
         setSvg('');
-        onError(err.message || '渲染失败');
+        onError(errorMsg);
         onSvgReady('');
       }
     };
-    renderDiagram();
-  }, [code, onError, onSvgReady]);
+    
+    const timer = setTimeout(renderDiagram, 100);
+    return () => clearTimeout(timer);
+  }, [code]);
 
   if (error) {
     return (
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="max-w-md w-full p-6 bg-red-50 border border-red-200 rounded-lg">
-          <h3 className="text-red-600 font-medium mb-2">渲染错误</h3>
-          <p className="text-red-500 text-sm break-words">{error}</p>
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="max-w-lg w-full p-6 bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-300 rounded-xl shadow-lg">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-3xl">⚠️</span>
+            <h3 className="text-lg font-bold text-red-700">语法错误</h3>
+          </div>
+          <p className="text-red-600 text-sm mb-3 bg-white bg-opacity-50 p-3 rounded-lg break-all">
+            {error}
+          </p>
+          <div className="text-xs text-red-500">
+            <p>• 请检查节点是否使用正确的括号: <code className="bg-red-200 px-1 rounded">[文字]</code> <code className="bg-red-200 px-1 rounded">(文字)</code> <code className="bg-red-200 px-1 rounded">{`{文字}`}</code></p>
+            <p>• 确保图表类型正确: <code className="bg-red-200 px-1 rounded">flowchart TD</code> 或 <code className="bg-red-200 px-1 rounded">flowchart LR</code></p>
+            <p>• 参考上方语法提示获取帮助</p>
+          </div>
         </div>
       </div>
     );
@@ -54,8 +91,12 @@ function MermaidPreview({ code, onError, onSvgReady }: { code: string; onError: 
 
   if (!svg) {
     return (
-      <div className="flex-1 flex items-center justify-center p-8">
-        <p className="text-gray-400">预览区域</p>
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-4xl mb-2">📊</p>
+          <p className="text-gray-400">在左侧输入 Mermaid 代码</p>
+          <p className="text-gray-400 text-sm">或选择模板开始</p>
+        </div>
       </div>
     );
   }
@@ -63,7 +104,7 @@ function MermaidPreview({ code, onError, onSvgReady }: { code: string; onError: 
   return (
     <div 
       ref={containerRef} 
-      className="flex-1 overflow-auto p-8 flex items-start justify-center"
+      className="flex-1 overflow-auto p-4 flex items-start justify-center"
       dangerouslySetInnerHTML={{ __html: svg }} 
     />
   );
@@ -316,7 +357,18 @@ export default function DiagramEditorPage() {
     let start = textarea.selectionStart;
     let end = textarea.selectionEnd;
     
-    // 验证光标位置有效
+    // 如果光标在开头或没有选中内容，追加到末尾
+    if (start === 0 || (start === end)) {
+      const newCode = code + '\n' + text;
+      setCode(newCode);
+      
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(newCode.length, newCode.length);
+      }, 0);
+      return;
+    }
+    
     if (typeof start !== 'number' || start < 0) {
       start = code.length;
     }
@@ -335,14 +387,14 @@ export default function DiagramEditorPage() {
   };
 
   const toolbarActions = [
-    { label: '矩形', title: '矩形节点', action: () => insertText('[节点] ') },
-    { label: '圆角', title: '圆角矩形', action: () => insertText('(节点) ') },
-    { label: '菱形', title: '判断节点', action: () => insertText('{节点} ') },
-    { label: '圆形', title: '圆形节点', action: () => insertText('((节点)) ') },
-    { label: '-->', title: '箭头连线', action: () => insertText('--> ') },
-    { label: '---', title: '实线', action: () => insertText('--- ') },
-    { label: '-.-', title: '虚线', action: () => insertText('-.- ') },
-    { label: '|标签|', title: '分支标签', action: () => insertText('|是| ') },
+    { label: '矩形', title: '矩形节点 [文字]', action: () => insertText('[矩形] ') },
+    { label: '圆角', title: '圆角 (文字)', action: () => insertText('(圆角) ') },
+    { label: '菱形', title: '判断 {文字}', action: () => insertText('{判断} ') },
+    { label: '圆形', title: '圆形 ((文字))', action: () => insertText('(圆形) ') },
+    { label: '-->', title: '箭头线 -->', action: () => insertText('--> ') },
+    { label: '---', title: '实线 ---', action: () => insertText('--- ') },
+    { label: '-.-', title: '虚线 -.-', action: () => insertText('-.- ') },
+    { label: '|→|', title: '分支线 |标签|', action: () => insertText('|是| ') },
   ];
 
   return (
@@ -368,8 +420,8 @@ export default function DiagramEditorPage() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6 flex items-center justify-between">
-          <Link href="/tools?category=文档转换" className="text-blue-600 hover:underline flex items-center gap-2">
-            ← 返回文档转换
+          <Link href="/tools?category=文档编辑" className="text-blue-600 hover:underline flex items-center gap-2">
+            ← 返回文档编辑
           </Link>
           <button
             onClick={() => setShowTemplates(!showTemplates)}

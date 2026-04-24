@@ -128,8 +128,8 @@ export default function DocumentEditorPage() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6 flex items-center justify-between">
-          <Link href="/tools?category=文档转换" className="text-blue-600 hover:underline flex items-center gap-2">
-            ← 返回文档转换
+          <Link href="/tools?category=文档编辑" className="text-blue-600 hover:underline flex items-center gap-2">
+            ← 返回文档编辑
           </Link>
           {showEditor && (
             <button
